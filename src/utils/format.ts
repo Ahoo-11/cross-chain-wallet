@@ -50,8 +50,9 @@ export const formatTokenAmount = (amount: string | number, decimals: number = 18
 /**
  * Format percentage with proper decimals
  */
-export const formatPercentage = (percentage: number, decimals: number = 2): string => {
-  return `${percentage.toFixed(decimals)}%`;
+export const formatPercentage = (percentage: number | undefined, decimals: number = 2): string => {
+  const value = typeof percentage === 'number' && isFinite(percentage) ? percentage : 0;
+  return `${value.toFixed(decimals)}%`;
 };
 
 /**

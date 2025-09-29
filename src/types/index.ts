@@ -11,6 +11,7 @@ export interface Chain {
     decimals: number;
   };
   icon: string;
+  color?: string;
 }
 
 export interface Token {

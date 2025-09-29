@@ -15,9 +15,25 @@ import { useVaultStore } from '../stores/vaultStore';
 import { SUPPORTED_CHAINS } from '../constants/chains';
 import { formatCurrency, formatPercentage, formatAddress } from '../utils/format';
 
+// Local compatibility type to handle legacy transaction shapes without using any
+type TxCompat = import('../types').Transaction & {
+  toChain?: number;
+  fromChain?: number;
+  amount?: number | string;
+  status?: 'pending' | 'confirmed' | 'failed' | 'completed';
+};
+
 export const Dashboard: React.FC = () => {
-  const { isConnected, address, balances } = useWalletStore();
-  const { positions, statistics, recentTransactions } = useVaultStore();
+  const { isConnected, address } = useWalletStore();
+  const { positions, stats, transactions } = useVaultStore();
+
+  // Helper to resolve chainId across different transaction shapes
+  const resolveChainId = (tx: TxCompat): number | undefined => {
+    if (typeof tx.chainId === 'number') return tx.chainId;
+    if (typeof tx.toChain === 'number') return tx.toChain;
+    if (typeof tx.fromChain === 'number') return tx.fromChain;
+    return undefined;
+  };
 
   if (!isConnected) {
     return (
@@ -80,7 +96,7 @@ export const Dashboard: React.FC = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Total Balance</p>
               <p className="text-2xl font-bold text-gray-900">
-                {formatCurrency(statistics.totalBalance)}
+                {formatCurrency(stats.totalValueLocked)}
               </p>
             </div>
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -90,7 +106,7 @@ export const Dashboard: React.FC = () => {
           <div className="mt-4 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-green-500" />
             <span className="text-sm text-green-600 font-medium">
-              +{formatPercentage(statistics.totalYield)} this month
+              +{formatPercentage(stats.averageApy)} APY
             </span>
           </div>
         </div>
@@ -100,7 +116,7 @@ export const Dashboard: React.FC = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Total Yield Earned</p>
               <p className="text-2xl font-bold text-gray-900">
-                {formatCurrency(statistics.totalYieldEarned)}
+                {formatCurrency(stats.totalYieldEarned)}
               </p>
             </div>
             <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -109,7 +125,7 @@ export const Dashboard: React.FC = () => {
           </div>
           <div className="mt-4 flex items-center gap-2">
             <span className="text-sm text-gray-600">
-              APY: {formatPercentage(statistics.averageApy)}
+              +{formatPercentage(stats.averageApy)} APY
             </span>
           </div>
         </div>
@@ -138,7 +154,7 @@ export const Dashboard: React.FC = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Transactions</p>
               <p className="text-2xl font-bold text-gray-900">
-                {recentTransactions.length}
+                {transactions.length}
               </p>
             </div>
             <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
@@ -171,14 +187,15 @@ export const Dashboard: React.FC = () => {
           <div className="space-y-4">
             {SUPPORTED_CHAINS.map((chain) => {
               const chainPositions = positions.filter(p => p.chainId === chain.id);
-              const chainBalance = chainPositions.reduce((sum, p) => sum + p.balance, 0);
-              const percentage = statistics.totalBalance > 0 ? (chainBalance / statistics.totalBalance) * 100 : 0;
+              const chainValue = chainPositions.reduce((sum, p) => sum + (p.usdValue || 0), 0);
+              const percentage = stats.totalValueLocked > 0 ? (chainValue / stats.totalValueLocked) * 100 : 0;
+              const color = chain.color ?? '#64748b';
               
               return (
                 <div key={chain.id} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: chain.color + '20' }}>
-                      <span className="text-xs font-medium" style={{ color: chain.color }}>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: `${color}20` }}>
+                      <span className="text-xs font-medium" style={{ color }}>
                         {chain.symbol}
                       </span>
                     </div>
@@ -186,7 +203,7 @@ export const Dashboard: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <div className="font-medium text-gray-900">
-                      {formatCurrency(chainBalance)}
+                      {formatCurrency(chainValue)}
                     </div>
                     <div className="text-sm text-gray-500">
                       {formatPercentage(percentage)}
@@ -212,9 +229,17 @@ export const Dashboard: React.FC = () => {
           </div>
           
           <div className="space-y-4">
-            {recentTransactions.slice(0, 5).map((tx) => {
-              const chain = SUPPORTED_CHAINS.find(c => c.id === tx.chainId);
+            {transactions.slice(0, 5).map((tx) => {
+              const chainId = resolveChainId(tx as TxCompat);
+              const chain = SUPPORTED_CHAINS.find(c => c.id === chainId);
               const isDeposit = tx.type === 'deposit';
+              const amountNum = typeof tx.amount === 'string' ? Number(tx.amount) : (tx.amount ?? 0);
+              const status = (tx as TxCompat).status ?? 'pending';
+              const statusClass = status === 'confirmed' || status === 'completed'
+                ? 'bg-green-100 text-green-800'
+                : status === 'pending'
+                ? 'bg-yellow-100 text-yellow-800'
+                : 'bg-red-100 text-red-800';
               
               return (
                 <div key={tx.id} className="flex items-center justify-between">
@@ -241,14 +266,10 @@ export const Dashboard: React.FC = () => {
                     <div className={`font-medium ${
                       isDeposit ? 'text-green-600' : 'text-red-600'
                     }`}>
-                      {isDeposit ? '+' : '-'}{formatCurrency(tx.amount)}
+                      {isDeposit ? '+' : '-'}{formatCurrency(amountNum)}
                     </div>
-                    <div className={`text-xs px-2 py-1 rounded-full inline-block ${
-                      tx.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      tx.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
-                      {tx.status}
+                    <div className={`text-xs px-2 py-1 rounded-full inline-block ${statusClass}`}>
+                      {status}
                     </div>
                   </div>
                 </div>
