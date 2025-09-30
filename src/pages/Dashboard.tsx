@@ -25,7 +25,7 @@ type TxCompat = import('../types').Transaction & {
 
 export const Dashboard: React.FC = () => {
   const { isConnected, address } = useWalletStore();
-  const { positions, stats, transactions } = useVaultStore();
+  const { positions, statistics, recentTransactions } = useVaultStore();
 
   // Helper to resolve chainId across different transaction shapes
   const resolveChainId = (tx: TxCompat): number | undefined => {
@@ -42,10 +42,10 @@ export const Dashboard: React.FC = () => {
           <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <Zap className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             Welcome to Cross-Chain DeFi Vault
           </h2>
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-600 dark:text-gray-300 mb-8">
             Connect your wallet to start earning yield across multiple blockchains
           </p>
           <Link
@@ -65,8 +65,8 @@ export const Dashboard: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-1">
             Welcome back, {formatAddress(address!)}
           </p>
         </div>
@@ -91,78 +91,78 @@ export const Dashboard: React.FC = () => {
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <div className="bg-white/80 dark:bg-gray-900/60 backdrop-blur p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-transform hover:-translate-y-0.5 hover:shadow-md">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Balance</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {formatCurrency(stats.totalValueLocked)}
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Balance</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {formatCurrency(statistics.totalBalance)}
               </p>
             </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+              <DollarSign className="w-6 h-6 text-blue-600 dark:text-blue-300" />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-green-500" />
             <span className="text-sm text-green-600 font-medium">
-              +{formatPercentage(stats.averageApy)} APY
+              +{formatPercentage(statistics.averageApy)} APY
             </span>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <div className="bg-white/80 dark:bg-gray-900/60 backdrop-blur p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-transform hover:-translate-y-0.5 hover:shadow-md">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Yield Earned</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {formatCurrency(stats.totalYieldEarned)}
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Yield Earned</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {formatCurrency(statistics.totalYieldEarned)}
               </p>
             </div>
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-green-600" />
+            <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-300" />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-2">
             <span className="text-sm text-gray-600">
-              +{formatPercentage(stats.averageApy)} APY
+              +{formatPercentage(statistics.averageApy)} APY
             </span>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <div className="bg-white/80 dark:bg-gray-900/60 backdrop-blur p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-transform hover:-translate-y-0.5 hover:shadow-md">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Active Positions</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Active Positions</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {positions.length}
               </p>
             </div>
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <PieChart className="w-6 h-6 text-purple-600" />
+            <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+              <PieChart className="w-6 h-6 text-purple-600 dark:text-purple-300" />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-2">
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-gray-600 dark:text-gray-300">
               Across {new Set(positions.map(p => p.chainId)).size} chains
             </span>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <div className="bg-white/80 dark:bg-gray-900/60 backdrop-blur p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 transition-transform hover:-translate-y-0.5 hover:shadow-md">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Transactions</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {transactions.length}
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Transactions</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {recentTransactions.length}
               </p>
             </div>
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Activity className="w-6 h-6 text-orange-600" />
+            <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center">
+              <Activity className="w-6 h-6 text-orange-600 dark:text-orange-300" />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-2">
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-gray-600 dark:text-gray-300">
               Last 30 days
             </span>
           </div>
@@ -172,9 +172,9 @@ export const Dashboard: React.FC = () => {
       {/* Portfolio Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Chain Distribution */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <div className="bg-white/80 dark:bg-gray-900/60 backdrop-blur p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Chain Distribution</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Chain Distribution</h3>
             <Link
               to="/vault"
               className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1"
@@ -187,8 +187,9 @@ export const Dashboard: React.FC = () => {
           <div className="space-y-4">
             {SUPPORTED_CHAINS.map((chain) => {
               const chainPositions = positions.filter(p => p.chainId === chain.id);
-              const chainValue = chainPositions.reduce((sum, p) => sum + (p.usdValue || 0), 0);
-              const percentage = stats.totalValueLocked > 0 ? (chainValue / stats.totalValueLocked) * 100 : 0;
+              const chainValue = chainPositions.length;
+              const totalPositions = positions.length || 1;
+              const percentage = (chainValue / totalPositions) * 100;
               const color = chain.color ?? '#64748b';
               
               return (
@@ -199,13 +200,13 @@ export const Dashboard: React.FC = () => {
                         {chain.symbol}
                       </span>
                     </div>
-                    <span className="font-medium text-gray-900">{chain.name}</span>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">{chain.name}</span>
                   </div>
                   <div className="text-right">
-                    <div className="font-medium text-gray-900">
-                      {formatCurrency(chainValue)}
+                    <div className="font-medium text-gray-900 dark:text-gray-100">
+                      {chainValue}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
                       {formatPercentage(percentage)}
                     </div>
                   </div>
@@ -216,9 +217,9 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Recent Transactions */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <div className="bg-white/80 dark:bg-gray-900/60 backdrop-blur p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Activity</h3>
             <Link
               to="/history"
               className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1"
@@ -229,13 +230,13 @@ export const Dashboard: React.FC = () => {
           </div>
           
           <div className="space-y-4">
-            {transactions.slice(0, 5).map((tx) => {
+            {recentTransactions.slice(0, 5).map((tx) => {
               const chainId = resolveChainId(tx as TxCompat);
               const chain = SUPPORTED_CHAINS.find(c => c.id === chainId);
               const isDeposit = tx.type === 'deposit';
               const amountNum = typeof tx.amount === 'string' ? Number(tx.amount) : (tx.amount ?? 0);
               const status = (tx as TxCompat).status ?? 'pending';
-              const statusClass = status === 'confirmed' || status === 'completed'
+              const statusClass = status === 'completed'
                 ? 'bg-green-100 text-green-800'
                 : status === 'pending'
                 ? 'bg-yellow-100 text-yellow-800'
@@ -254,10 +255,10 @@ export const Dashboard: React.FC = () => {
                       )}
                     </div>
                     <div>
-                      <div className="font-medium text-gray-900 capitalize">
+                      <div className="font-medium text-gray-900 dark:text-gray-100 capitalize">
                         {tx.type}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
                         {chain?.name} • {new Date(tx.timestamp).toLocaleDateString()}
                       </div>
                     </div>

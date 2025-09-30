@@ -6,6 +6,7 @@ import { getChainById } from '../constants/chains';
 interface WalletStore extends WalletState {
   // Actions
   connectWallet: () => Promise<void>;
+  connectMockWallet: () => Promise<void>;
   disconnectWallet: () => void;
   switchChain: (chainId: number) => Promise<void>;
   updateBalance: () => Promise<void>;
@@ -86,6 +87,31 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
     }
   },
 
+  // Mock connection for demo/testing without a real wallet
+  connectMockWallet: async () => {
+    try {
+      set({ isConnecting: true });
+
+      // Use ZetaChain as default demo network
+      const demoChainId = 7000;
+      const demoAddress = '0xDEMO000000000000000000000000000000000000';
+      const demoBalanceEth = '10.0';
+
+      set({
+        isConnected: true,
+        address: demoAddress,
+        chainId: demoChainId,
+        balance: demoBalanceEth,
+        provider: null,
+        isConnecting: false,
+      });
+    } catch (error) {
+      console.error('Failed to mock connect wallet:', error);
+      set({ isConnecting: false });
+      throw error;
+    }
+  },
+
   disconnectWallet: () => {
     set({
       isConnected: false,
@@ -101,13 +127,16 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
     try {
       set({ isSwitchingChain: true });
       
-      if (!window.ethereum) {
-        throw new Error('MetaMask is not installed');
-      }
-
+      const { provider } = get();
       const chain = getChainById(chainId);
       if (!chain) {
         throw new Error('Unsupported chain');
+      }
+
+      // Demo mode fallback: if no provider or no injected wallet, just update chainId
+      if (!window.ethereum || !provider) {
+        set({ chainId, isSwitchingChain: false });
+        return;
       }
 
       try {

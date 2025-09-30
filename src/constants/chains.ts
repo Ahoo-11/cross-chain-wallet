@@ -6,26 +6,18 @@ export const SUPPORTED_CHAINS: Chain[] = [
     id: 1,
     name: 'Ethereum',
     symbol: 'ETH',
-    rpcUrl: 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY',
+    rpcUrl: 'https://rpc.ankr.com/eth',
     blockExplorer: 'https://etherscan.io',
-    nativeCurrency: {
-      name: 'Ether',
-      symbol: 'ETH',
-      decimals: 18,
-    },
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     icon: '🔷',
   },
   {
     id: 137,
     name: 'Polygon',
-    symbol: 'MATIC',
+    symbol: 'POL',
     rpcUrl: 'https://polygon-rpc.com',
     blockExplorer: 'https://polygonscan.com',
-    nativeCurrency: {
-      name: 'Polygon',
-      symbol: 'MATIC',
-      decimals: 18,
-    },
+    nativeCurrency: { name: 'Polygon', symbol: 'POL', decimals: 18 },
     icon: '🟣',
   },
   {
@@ -34,11 +26,7 @@ export const SUPPORTED_CHAINS: Chain[] = [
     symbol: 'BNB',
     rpcUrl: 'https://bsc-dataseed.binance.org',
     blockExplorer: 'https://bscscan.com',
-    nativeCurrency: {
-      name: 'BNB',
-      symbol: 'BNB',
-      decimals: 18,
-    },
+    nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
     icon: '🟡',
   },
   {
@@ -47,18 +35,14 @@ export const SUPPORTED_CHAINS: Chain[] = [
     symbol: 'ZETA',
     rpcUrl: 'https://zetachain-evm.blockpi.network/v1/rpc/public',
     blockExplorer: 'https://zetachain.blockscout.com',
-    nativeCurrency: {
-      name: 'Zeta',
-      symbol: 'ZETA',
-      decimals: 18,
-    },
+    nativeCurrency: { name: 'Zeta', symbol: 'ZETA', decimals: 18 },
     icon: '⚡',
   },
 ];
 
 // Supported tokens per chain
 export const SUPPORTED_TOKENS: Record<number, Token[]> = {
-  // Ethereum tokens
+  // Ethereum mainnet
   1: [
     {
       address: '0x0000000000000000000000000000000000000000',
@@ -69,7 +53,7 @@ export const SUPPORTED_TOKENS: Record<number, Token[]> = {
       chainId: 1,
     },
     {
-      address: '0xA0b86a33E6441b8435b662f0E2d0c2837c0b0000',
+      address: '0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       symbol: 'USDC',
       name: 'USD Coin',
       decimals: 6,
@@ -77,7 +61,7 @@ export const SUPPORTED_TOKENS: Record<number, Token[]> = {
       chainId: 1,
     },
     {
-      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
       symbol: 'USDT',
       name: 'Tether USD',
       decimals: 6,
@@ -85,18 +69,18 @@ export const SUPPORTED_TOKENS: Record<number, Token[]> = {
       chainId: 1,
     },
   ],
-  // Polygon tokens
+  // Polygon
   137: [
     {
       address: '0x0000000000000000000000000000000000000000',
-      symbol: 'MATIC',
+      symbol: 'POL',
       name: 'Polygon',
       decimals: 18,
       icon: '🟣',
       chainId: 137,
     },
     {
-      address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+      address: '0x2791bfd80d24cfb3d7c2c0b2d0ab6e8b6a9a0d0f',
       symbol: 'USDC',
       name: 'USD Coin',
       decimals: 6,
@@ -104,7 +88,7 @@ export const SUPPORTED_TOKENS: Record<number, Token[]> = {
       chainId: 137,
     },
     {
-      address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+      address: '0xc2132d05d31c914a87c6611c10748aeeb04b58e8',
       symbol: 'USDT',
       name: 'Tether USD',
       decimals: 6,
@@ -112,7 +96,7 @@ export const SUPPORTED_TOKENS: Record<number, Token[]> = {
       chainId: 137,
     },
   ],
-  // BNB Chain tokens
+  // BNB Chain
   56: [
     {
       address: '0x0000000000000000000000000000000000000000',
@@ -123,7 +107,7 @@ export const SUPPORTED_TOKENS: Record<number, Token[]> = {
       chainId: 56,
     },
     {
-      address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+      address: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
       symbol: 'USDC',
       name: 'USD Coin',
       decimals: 18,
@@ -131,7 +115,7 @@ export const SUPPORTED_TOKENS: Record<number, Token[]> = {
       chainId: 56,
     },
     {
-      address: '0x55d398326f99059fF775485246999027B3197955',
+      address: '0x55d398326f99059ff775485246999027b3197955',
       symbol: 'USDT',
       name: 'Tether USD',
       decimals: 18,
@@ -139,7 +123,7 @@ export const SUPPORTED_TOKENS: Record<number, Token[]> = {
       chainId: 56,
     },
   ],
-  // ZetaChain tokens
+  // ZetaChain tokens (demo): native ZETA plus cross-chain assets accessible via ZetaChain
   7000: [
     {
       address: '0x0000000000000000000000000000000000000000',
@@ -147,6 +131,30 @@ export const SUPPORTED_TOKENS: Record<number, Token[]> = {
       name: 'Zeta',
       decimals: 18,
       icon: '⚡',
+      chainId: 7000,
+    },
+    {
+      address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+      symbol: 'ETH',
+      name: 'Ether (via ZetaChain)',
+      decimals: 18,
+      icon: '🔷',
+      chainId: 7000,
+    },
+    {
+      address: '0x1111111111111111111111111111111111111111',
+      symbol: 'USDC',
+      name: 'USD Coin (via ZetaChain)',
+      decimals: 6,
+      icon: '💵',
+      chainId: 7000,
+    },
+    {
+      address: '0x2222222222222222222222222222222222222222',
+      symbol: 'USDT',
+      name: 'Tether USD (via ZetaChain)',
+      decimals: 6,
+      icon: '💰',
       chainId: 7000,
     },
   ],

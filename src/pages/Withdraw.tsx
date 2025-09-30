@@ -133,28 +133,29 @@ export const Withdraw: React.FC = () => {
       <div className="flex items-center gap-4 mb-8">
         <Link
           to="/"
-          className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+          className="p-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Withdraw Funds</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Withdraw Funds</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-1">
             Withdraw your funds to any supported chain
           </p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
         {/* Position Selection */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
             Select Position to Withdraw From
           </label>
           <div className="space-y-3">
             {positions.map((position) => {
               const chain = SUPPORTED_CHAINS.find(c => c.id === position.chainId);
-              const token = SUPPORTED_TOKENS.find(t => t.symbol === position.tokenSymbol);
+              const ALL_TOKENS = Object.values(SUPPORTED_TOKENS).flat();
+              const token = ALL_TOKENS.find(t => t.symbol === position.tokenSymbol);
               
               return (
                 <button
@@ -162,8 +163,8 @@ export const Withdraw: React.FC = () => {
                   onClick={() => setSelectedPosition(position)}
                   className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
                     selectedPosition?.id === position.id
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30'
+                      : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -175,16 +176,16 @@ export const Withdraw: React.FC = () => {
                         {chain?.symbol}
                       </div>
                       <div>
-                        <div className="font-medium text-gray-900">
+                        <div className="font-medium text-gray-900 dark:text-gray-100">
                           {formatTokenAmount(position.balance, token?.decimals || 18)} {position.tokenSymbol}
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-gray-600 dark:text-gray-300">
                           {chain?.name} • APY: {formatPercentage(position.apy)}
                         </div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="font-medium text-gray-900">
+                      <div className="font-medium text-gray-900 dark:text-gray-100">
                         {formatCurrency(position.balance * 1800)} {/* Mock USD value */}
                       </div>
                       <div className="text-sm text-green-600">
@@ -202,7 +203,7 @@ export const Withdraw: React.FC = () => {
           <>
             {/* Destination Chain Selection */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Destination Chain
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -212,8 +213,8 @@ export const Withdraw: React.FC = () => {
                     onClick={() => setDestinationChain(chain)}
                     className={`p-4 rounded-lg border-2 transition-all ${
                       destinationChain.id === chain.id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30'
+                        : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
                     }`}
                   >
                     <div className="text-center">
@@ -223,7 +224,7 @@ export const Withdraw: React.FC = () => {
                       >
                         {chain.symbol}
                       </div>
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                         {chain.name}
                       </div>
                     </div>
@@ -234,7 +235,7 @@ export const Withdraw: React.FC = () => {
 
             {/* Amount Input */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Withdrawal Amount
               </label>
               
@@ -244,7 +245,7 @@ export const Withdraw: React.FC = () => {
                   <button
                     key={percentage}
                     onClick={() => handlePercentageWithdraw(percentage)}
-                    className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                    className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
                     {percentage}%
                   </button>
@@ -258,19 +259,19 @@ export const Withdraw: React.FC = () => {
                   onChange={(e) => setWithdrawAmount(e.target.value)}
                   placeholder="0.0"
                   max={selectedPosition.balance}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg dark:bg-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                 />
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-                  <span className="text-gray-500 text-sm">{selectedPosition.tokenSymbol}</span>
+                  <span className="text-gray-500 dark:text-gray-400 text-sm">{selectedPosition.tokenSymbol}</span>
                 </div>
               </div>
               
               <div className="mt-2 flex justify-between text-sm">
-                <span className="text-gray-600">
+                <span className="text-gray-600 dark:text-gray-300">
                   Available: {formatTokenAmount(selectedPosition.balance, 18)} {selectedPosition.tokenSymbol}
                 </span>
                 {withdrawAmount && (
-                  <span className="text-gray-600">
+                  <span className="text-gray-600 dark:text-gray-300">
                     {formatPercentage(withdrawPercentage)} of position
                   </span>
                 )}
@@ -279,39 +280,39 @@ export const Withdraw: React.FC = () => {
 
             {/* Transaction Preview */}
             {withdrawAmount && isValidAmount && (
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-medium text-gray-900 mb-3">Withdrawal Preview</h4>
+              <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Withdrawal Preview</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Withdrawal Amount:</span>
+                    <span className="text-gray-600 dark:text-gray-300">Withdrawal Amount:</span>
                     <span className="font-medium">{withdrawAmount} {selectedPosition.tokenSymbol}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">From Chain:</span>
+                    <span className="text-gray-600 dark:text-gray-300">From Chain:</span>
                     <span className="font-medium">
                       {SUPPORTED_CHAINS.find(c => c.id === selectedPosition.chainId)?.name}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">To Chain:</span>
+                    <span className="text-gray-600 dark:text-gray-300">To Chain:</span>
                     <span className="font-medium">{destinationChain.name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Cross-chain Fee:</span>
+                    <span className="text-gray-600 dark:text-gray-300">Cross-chain Fee:</span>
                     <span className="font-medium text-orange-600">
                       {formatCurrency(estimatedFee)}
                     </span>
                   </div>
-                  <div className="border-t border-gray-200 pt-2 mt-2">
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">You'll Receive:</span>
+                      <span className="text-gray-600 dark:text-gray-300">You'll Receive:</span>
                       <span className="font-medium text-green-600">
                         ≈ {formatCurrency((parseFloat(withdrawAmount) * 1800) - estimatedFee)}
                       </span>
                     </div>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Estimated Time:</span>
+                    <span className="text-gray-600 dark:text-gray-300">Estimated Time:</span>
                     <span className="font-medium flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       2-5 minutes
@@ -345,12 +346,12 @@ export const Withdraw: React.FC = () => {
             </button>
 
             {/* Info Box */}
-            <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="mt-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
               <div className="flex items-start gap-3">
                 <Info className="w-5 h-5 text-yellow-600 mt-0.5" />
-                <div className="text-sm text-yellow-800">
+                <div className="text-sm text-yellow-800 dark:text-yellow-200">
                   <p className="font-medium mb-1">Important Notes:</p>
-                  <ul className="space-y-1 text-yellow-700">
+                  <ul className="space-y-1 text-yellow-700 dark:text-yellow-300">
                     <li>• Cross-chain withdrawals may take 2-5 minutes to complete</li>
                     <li>• A small fee is charged for cross-chain transfers</li>
                     <li>• You can track the progress in your transaction history</li>

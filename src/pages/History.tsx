@@ -36,6 +36,7 @@ export const History: React.FC = () => {
     
     // Add cross-chain transfers as transactions
     crossChainTransfers.forEach(transfer => {
+      const txStatus = transfer.status === 'processing' ? 'pending' : transfer.status;
       transactions.push({
         id: `transfer-${transfer.id}`,
         type: 'transfer' as const,
@@ -43,7 +44,7 @@ export const History: React.FC = () => {
         tokenSymbol: transfer.tokenSymbol,
         chainId: transfer.fromChainId,
         toChainId: transfer.toChainId,
-        status: transfer.status,
+        status: txStatus,
         timestamp: transfer.timestamp,
         hash: transfer.txHash,
         fee: transfer.fee
@@ -243,7 +244,8 @@ export const History: React.FC = () => {
             {filteredTransactions.map((tx) => {
               const chain = SUPPORTED_CHAINS.find(c => c.id === tx.chainId);
               const toChain = tx.toChainId ? SUPPORTED_CHAINS.find(c => c.id === tx.toChainId) : null;
-              const token = SUPPORTED_TOKENS.find(t => t.symbol === tx.tokenSymbol);
+              const ALL_TOKENS = Object.values(SUPPORTED_TOKENS).flat();
+              const token = ALL_TOKENS.find(t => t.symbol === tx.tokenSymbol);
               
               return (
                 <div key={tx.id} className="p-6 hover:bg-gray-50 transition-colors">

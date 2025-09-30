@@ -16,7 +16,7 @@ import { useWalletStore } from '../stores/walletStore';
 import { SUPPORTED_CHAINS } from '../constants/chains';
 
 export const ConnectWallet: React.FC = () => {
-  const { isConnected, address, chainId, connectWallet, isConnecting } = useWalletStore();
+  const { isConnected, address, chainId, connectWallet, connectMockWallet, isConnecting } = useWalletStore();
   const navigate = useNavigate();
   const [showMetaMaskInfo, setShowMetaMaskInfo] = useState(false);
 
@@ -25,7 +25,7 @@ export const ConnectWallet: React.FC = () => {
       await connectWallet();
       // Redirect to dashboard after successful connection
       setTimeout(() => {
-        navigate('/');
+        navigate('/dashboard');
       }, 1000);
     } catch (error) {
       console.error('Failed to connect wallet:', error);
@@ -57,7 +57,7 @@ export const ConnectWallet: React.FC = () => {
           </div>
           
           <Link
-            to="/"
+            to="/dashboard"
             className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
           >
             Go to Dashboard
@@ -209,6 +209,34 @@ export const ConnectWallet: React.FC = () => {
               )}
             </div>
           )}
+          {/* Demo Mode / Fake Login */}
+          <div className="mt-6">
+            <button
+              onClick={async () => {
+              try {
+                  await connectMockWallet();
+                  navigate('/dashboard');
+                } catch (e) {
+                  console.error('Failed to start demo mode:', e);
+                }
+              }}
+              className="w-full flex items-center justify-between p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Wallet className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="text-left">
+                  <div className="font-semibold text-gray-900">Try Demo Mode</div>
+                  <div className="text-sm text-gray-600">Use a fake wallet to explore the app</div>
+                </div>
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400" />
+            </button>
+            <p className="text-xs text-gray-500 mt-2 text-center">
+              Demo mode uses a mock wallet with test data. No blockchain interaction is performed.
+            </p>
+          </div>
         </div>
 
         {/* Supported Networks */}

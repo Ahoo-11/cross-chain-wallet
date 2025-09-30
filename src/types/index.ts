@@ -42,29 +42,35 @@ export interface UserBalance {
 // Transaction Types
 export interface Transaction {
   id: string;
-  type: 'deposit' | 'withdraw' | 'yield' | 'cross_chain' | 'cross_chain_send' | 'cross_chain_receive';
+  type: 'deposit' | 'withdraw' | 'transfer' | 'yield' | 'cross_chain_send' | 'cross_chain_receive';
   amount: number;
   tokenSymbol: string;
   chainId: number;
-  status: 'pending' | 'confirmed' | 'failed';
+  toChainId?: number;
+  status: 'pending' | 'completed' | 'failed';
   timestamp: number;
   txHash?: string;
+  hash?: string;
   description?: string;
+  fee?: number;
 }
 
 // Vault Types
 export interface VaultPosition {
+  id: string;
   chainId: number;
-  tokenAddress: string;
-  amount: string;
-  usdValue: number;
+  tokenSymbol: string;
+  balance: number;
   apy: number;
+  yieldEarned: number;
+  lastUpdated: number;
 }
 
 export interface VaultStats {
-  totalValueLocked: number;
+  totalBalance: number;
   totalYieldEarned: number;
   averageApy: number;
+  totalYield: number;
   positionsCount: number;
 }
 
@@ -81,6 +87,7 @@ export interface CrossChainTransfer {
   txHash?: string;
   zetaChainTxHash?: string;
   destinationTxHash?: string;
+  fee?: number;
 }
 
 // API Response Types

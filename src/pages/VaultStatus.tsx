@@ -12,7 +12,7 @@ import {
   ExternalLink,
   Info
 } from 'lucide-react';
-import { PieChart as RechartsPieChart, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line } from 'recharts';
+import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line } from 'recharts';
 import { useWalletStore } from '../stores/walletStore';
 import { useVaultStore } from '../stores/vaultStore';
 import { SUPPORTED_CHAINS, SUPPORTED_TOKENS } from '../constants/chains';
@@ -53,7 +53,8 @@ export const VaultStatus: React.FC = () => {
   ];
 
   // Token distribution data
-  const tokenDistribution = SUPPORTED_TOKENS.map(token => {
+  const ALL_TOKENS = Object.values(SUPPORTED_TOKENS).flat();
+  const tokenDistribution = ALL_TOKENS.map(token => {
     const tokenPositions = positions.filter(p => p.tokenSymbol === token.symbol);
     const totalValue = tokenPositions.reduce((sum, p) => sum + p.balance, 0);
     
@@ -369,7 +370,7 @@ export const VaultStatus: React.FC = () => {
             <div className="divide-y divide-gray-200">
               {positions.map((position) => {
                 const chain = SUPPORTED_CHAINS.find(c => c.id === position.chainId);
-                const token = SUPPORTED_TOKENS.find(t => t.symbol === position.tokenSymbol);
+                const token = ALL_TOKENS.find(t => t.symbol === position.tokenSymbol);
                 
                 return (
                   <div key={position.id} className="p-6">
