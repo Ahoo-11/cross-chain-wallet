@@ -1,57 +1,67 @@
-# React + TypeScript + Vite
+# Cross-Chain Wallet (ZetaChain demo)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Vite + React + TypeScript app with a lightweight Express API. It showcases a cross-chain wallet dashboard, deposits/withdrawals, vault status, and history views, using ethers v6 and mock chain/token configs.
 
-Currently, two official plugins are available:
+Key features
+- Pages: Home, Dashboard, Deposit, Withdraw, History, Vault, Connect Wallet
+- Dark mode UI with Tailwind CSS, icons via lucide-react
+- State via Zustand, routing via React Router
+- Charts via Recharts, toasts via react-hot-toast
+- API server (Express) for local development, proxied by Vite
+- Vercel-ready serverless routing
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Tech stack
+- Frontend: Vite + React + TypeScript, Tailwind CSS
+- State/UI: Zustand, lucide-react, @headlessui/react, @heroicons/react
+- Blockchain: ethers v6, mock chain/token configs
+- Charts/feedback: Recharts, react-hot-toast
+- Backend (dev): Express + cors + dotenv (Nodemon + tsx)
 
-## Expanding the ESLint configuration
+Getting started
+1) Prerequisites: Node.js >= 18
+2) Install deps: npm install
+3) Dev (client + server together): npm run dev
+   - Client runs Vite and proxies /api to http://localhost:3001
+4) Run only client: npm run client:dev
+5) Run only server: npm run server:dev
+6) Type-check: npm run check
+7) Lint: npm run lint
+8) Build: npm run build, then preview: npm run preview
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Environment variables
+- Create .env in project root (optional)
+- PORT=3001 (default if unset)
+- Add any secrets (RPC keys, API keys) here. Never commit secrets.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+API overview
+- Local dev server entry: api/server.ts (Express), loads app from api/app.ts
+- Endpoints:
+  - GET /api/health → { success: true, message: 'ok' }
+  - /api/auth/register, /api/auth/login, /api/auth/logout (placeholders)
+- Error handler returns JSON, 404 returns { success: false, error: 'API not found' }
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Vite proxy & routing
+- vite.config.ts proxies /api → http://localhost:3001 in dev
+- React Router paths:
+  - /, /dashboard, /deposit, /withdraw, /history, /vault, /connect
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Deployment (Vercel)
+- vercel.json rewrites:
+  - /api/* → /api/index (serverless handler)
+  - /* → /index.html (SPA)
+- api/index.ts exports Vercel handler that calls the Express app
 
-export default tseslint.config({
-  extends: [
-    // other configs...
-    // Enable lint rules for React
-    reactX.configs['recommended-typescript'],
-    // Enable lint rules for React DOM
-    reactDom.configs.recommended,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Blockchain configuration
+- src/constants/chains.ts lists supported chains: Ethereum, Polygon, BNB Chain, ZetaChain
+- SUPPORTED_TOKENS per chain, ZETA_CONTRACTS placeholders, TRANSACTION_SETTINGS
+- src/utils/web3.ts wraps ethers for providers, balances, explorers
+
+Project structure (key folders)
+- src/ components, pages, stores, utils, constants, types
+- api/ Express app, routes, local server entry
+- public/ assets (favicon.svg)
+
+Notes
+- Tailwind configured via postcss.config.js and tailwind.config.js
+- ESLint configured in eslint.config.js
+- Uses vite-tsconfig-paths and react-dev-locator for DX
